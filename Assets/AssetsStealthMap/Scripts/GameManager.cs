@@ -3,17 +3,13 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager Instance { get; private set; }
 
-
-    [Header("UI (optional)")]
-    public GameObject winPanel;
-    public GameObject losePanel;
-
+    [Header("UI Optional")]
+    [SerializeField] GameObject winPanel;
+    [SerializeField] GameObject losePanel;
 
     bool _locked;
-
 
     void Awake()
     {
@@ -21,7 +17,17 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
 
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 
     public void PlayerCaught()
     {
@@ -47,15 +53,4 @@ public class GameManager : MonoBehaviour
     }
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

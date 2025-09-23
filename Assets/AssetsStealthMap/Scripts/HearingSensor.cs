@@ -5,13 +5,11 @@ public class HearingSensor : MonoBehaviour
 
     public GuardAI guard;
 
-
     void Reset()
     {
         GetComponent<SphereCollider>().isTrigger = true;
         if (!guard) guard = GetComponentInParent<GuardAI>();
     }
-
 
     void OnTriggerStay(Collider other)
     {
@@ -23,6 +21,7 @@ public class HearingSensor : MonoBehaviour
             guard.OnHeard(other.transform.position);
         }
     }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

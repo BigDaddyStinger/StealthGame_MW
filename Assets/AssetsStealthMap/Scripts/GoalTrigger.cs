@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Controls : MonoBehaviour
+public class GoalTrigger : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -12,5 +12,13 @@ public class Controls : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            GameManager.Instance.PlayerWon();
+        }
     }
 }

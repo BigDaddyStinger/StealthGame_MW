@@ -1,13 +1,14 @@
 using UnityEngine;
 
-public class GoalTrigger : MonoBehaviour
+public class NoiseEmitter : MonoBehaviour
 {
-    void OnTriggerEnter(Collider other)
+    SPlayerController playerController;
+
+    public bool IsNoisy => playerController != null && playerController.IsNoisy;
+
+    void Awake()
     {
-        if (other.CompareTag("Player"))
-        {
-            GameManager.Instance.PlayerWon();
-        }
+        playerController = GetComponent<SPlayerController>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
