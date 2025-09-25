@@ -65,6 +65,7 @@ public class GuardAI : MonoBehaviour
     void Update()
     {
         if (!IsAgentReady()) return;
+
         switch (state)
         {
             case GuardState.Patrol: UpdatePatrol(); break;
@@ -81,8 +82,8 @@ public class GuardAI : MonoBehaviour
     void EnsureOnNavMesh()
     {
         if (guardAgent == null || !guardAgent.isActiveAndEnabled) return;
-        if (guardAgent.isOnNavMesh) return;
 
+        if (guardAgent.isOnNavMesh) return;
 
         if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, snapToNavMeshDistance, NavMesh.AllAreas))
         {
@@ -96,15 +97,12 @@ public class GuardAI : MonoBehaviour
         guardAgent.isStopped = false;
         if (waypoints.Count == 0) return;
 
-
         if (!guardAgent.pathPending && guardAgent.remainingDistance <= waypointTolerance)
         {
             _wpIndex = (_wpIndex + 1) % waypoints.Count;
             guardAgent.SetDestination(waypoints[_wpIndex].position);
         }
 
-
-        // Opportunistic sight check
         if (CanSeePlayer(out _))
         {
             BeginPursuit();
@@ -114,10 +112,8 @@ public class GuardAI : MonoBehaviour
     void UpdateInvestigate()
     {
         if (!IsAgentReady()) return;
-        guardAgent.isStopped = true; // look around
+        guardAgent.isStopped = true;
 
-
-        // Turn to face the investigate point
         Vector3 dir = (investigatePoint - transform.position);
         dir.y = 0f;
         if (dir.sqrMagnitude > 0.01f)
@@ -126,8 +122,6 @@ public class GuardAI : MonoBehaviour
             transform.rotation = Quaternion.RotateTowards(transform.rotation, look, turnSpeed * Time.deltaTime);
         }
 
-
-        // If player becomes visible during investigation, pursue
         if (CanSeePlayer(out _))
         {
             BeginPursuit();
@@ -137,7 +131,6 @@ public class GuardAI : MonoBehaviour
 
         if (Time.time >= investigateUntil)
         {
-            // Resume patrol
             state = GuardState.Patrol;
             if (waypoints.Count > 0 && IsAgentReady())
                 guardAgent.SetDestination(waypoints[_wpIndex].position);
@@ -150,8 +143,6 @@ public class GuardAI : MonoBehaviour
         guardAgent.isStopped = false;
         guardAgent.SetDestination(_player.position);
 
-
-        // Check catch
         float dist = Vector3.Distance(transform.position, _player.position);
         if (dist <= catchDistance)
         {
@@ -159,8 +150,6 @@ public class GuardAI : MonoBehaviour
             return;
         }
 
-
-        // Maintain LOS timer
         lostSight = CanSeePlayer(out _);
         if (lostSight)
         {
@@ -168,7 +157,6 @@ public class GuardAI : MonoBehaviour
         }
         else if (Time.time > lostSightUntil)
         {
-            // Lost the player: go to last known position and investigate
             Vector3 lastPos;
             if (TryGetLastKnownPlayerPos(out lastPos))
             {
@@ -177,7 +165,7 @@ public class GuardAI : MonoBehaviour
             }
             else
             {
-                state = GuardState.Investigate; // fallback: look around current spot
+                state = GuardState.Investigate;
                 investigatePoint = transform.position + transform.forward;
                 investigateUntil = Time.time + investigateDuration;
             }
@@ -196,7 +184,7 @@ public class GuardAI : MonoBehaviour
 
     public void OnHeard(Vector3 worldPoint)
     {
-        if (state == GuardState.Pursue) return; // already chasing
+        if (state == GuardState.Pursue) return;
         BeginInvestigate(worldPoint);
     }
 
@@ -224,25 +212,21 @@ public class GuardAI : MonoBehaviour
         dot = -1f;
         if (_player == null) return false;
 
-
         Vector3 eyePos = eyes ? eyes.position : transform.position;
         Vector3 toPlayer = (_player.position - eyePos);
         Vector3 toPlayerXZ = new Vector3(toPlayer.x, 0f, toPlayer.z);
         if (toPlayerXZ.sqrMagnitude < 0.0001f) return false;
 
-
         Vector3 dirNorm = toPlayerXZ.normalized;
         Vector3 fwd = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         dot = Vector3.Dot(fwd, dirNorm);
         float cosHalfFOV = Mathf.Cos(fieldOfView * 0.5f * Mathf.Deg2Rad);
-        if (dot < cosHalfFOV) return false; // outside FOV
+        if (dot < cosHalfFOV) return false;
 
-
-        // Raycast for obstacles between eyes and player
         Vector3 playerChest = _player.position + Vector3.up * 0.8f;
         if (Physics.Linecast(eyePos, playerChest, out RaycastHit hit, obstacleMask, QueryTriggerInteraction.Ignore))
         {
-            return false; // view blocked
+            return false;
         }
         return true;
     }
@@ -258,8 +242,4 @@ public class GuardAI : MonoBehaviour
         Gizmos.DrawLine(origin.position, origin.position + left * 3f);
         Gizmos.DrawLine(origin.position, origin.position + right * 3f);
     }
-
-
-
-
 }

@@ -10,18 +10,6 @@ public class SightSensor : MonoBehaviour
         if (!guard) guard = GetComponentInParent<GuardAI>();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     void OnTriggerStay(Collider other)
     {
         if (guard == null) return;
@@ -31,5 +19,4 @@ public class SightSensor : MonoBehaviour
             guard.OnSeen(other.transform);
         }
     }
-
 }

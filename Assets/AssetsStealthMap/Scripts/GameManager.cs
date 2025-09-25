@@ -17,17 +17,6 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void PlayerCaught()
     {
@@ -36,7 +25,6 @@ public class GameManager : MonoBehaviour
         Invoke(nameof(ReloadScene), 1.0f);
     }
 
-
     public void PlayerWon()
     {
         if (_locked) return; _locked = true;
@@ -44,13 +32,10 @@ public class GameManager : MonoBehaviour
         Invoke(nameof(ReloadScene), 1.5f);
     }
 
-
     void ReloadScene()
     {
         _locked = false;
         var idx = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(idx);
     }
-
-
 }

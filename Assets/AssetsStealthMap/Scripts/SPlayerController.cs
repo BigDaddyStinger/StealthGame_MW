@@ -12,7 +12,7 @@ public class SPlayerController : MonoBehaviour
     [SerializeField] bool isCrouched = false;
     public bool IsSneaking => isCrouched;
     public bool IsMoving => new Vector2(moveInput.x, moveInput.y).sqrMagnitude > (noiseMoveThreshold * noiseMoveThreshold);
-    public bool IsNoisy => IsMoving && !IsSneaking; // Guards hear only if not sneaking
+    public bool IsNoisy => IsMoving && !IsSneaking;
 
     [SerializeField] Rigidbody rb;
 
